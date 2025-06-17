@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-lobster: "Lobster", cursive;
+  --font-pacifico: "Pacifico", cursive;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s;
+}
+
+h1,
+.fancy-title {
+  font-family: var(--font-lobster), var(--font-geist-sans), cursive;
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+
+h2,
+.fancy-subtitle {
+  font-family: var(--font-pacifico), var(--font-geist-sans), cursive;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
