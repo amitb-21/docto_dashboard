@@ -54,3 +54,46 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: (err as Error).message });
   }
 };
+//updateUser
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { name, email, password } = req.body;
+    const userId = req.params.id;
+
+    const updates: Partial<{ name: string; email: string; password: string }> = {
+      name,
+      email,
+    };
+
+    if (password) {
+      updates.password = await bcrypt.hash(password, 10);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true }).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "User updated successfully", user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+};
+//delete User
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id;
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+};
+
