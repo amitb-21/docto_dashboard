@@ -1,26 +1,76 @@
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+//import Navbar from "../components/Navbar";
+"use client";
+import { motion } from "framer-motion";
+import Image from "next/image";
 import React from "react";
+import {
+  Sidebar,
+  SidebarBody,
+  SidebarLink,
+} from "@/components/Sidebar";
 
-interface DashboardLayoutProps {
+import {
+  IconLayoutDashboard,
+  IconUser,
+  IconNotes,
+  IconPrescription,
+} from "@tabler/icons-react";
+
+export default function DashboardLayout({
+  children,
+}: {
   children: React.ReactNode;
-}
+}) {
+  const links = [
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+      icon: <IconLayoutDashboard size={20} />,
+    },
+    {
+      label: "Profile",
+      href: "/profile",
+      icon: <IconUser size={20} />,
+    },
+    {
+      label: "Patient Log",
+      href: "/patient-log",
+      icon: <IconNotes size={20} />,
+    },
+    {
+      label: "Prescription Log",
+      href: "/prescription-log",
+      icon: <IconPrescription size={20} />,
+    },
+  ];
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <div className="flex flex-1">
-        <div className="w-1/4 min-w-[200px] max-w-xs">
-          <Sidebar />
-        </div>
-        <main className="w-3/4 flex-1 p-8 bg-white dark:bg-gray-900">
-          {children}
-        </main>
-      </div>
+    <div className="flex h-screen">
+      <Sidebar>
+  <SidebarBody>
+    <div className="mb-6 px-2 pt-4 flex items-center gap-2">
+      <Image src="/logo.svg" alt="Logo" width={32} height={32} />
+
+      <motion.span
+        animate={{
+          display: open ? "inline-block" : "none",
+          opacity: open ? 1 : 0,
+        }}
+        className="text-xl font-bold text-blue-700 origin-left"
+      >
+      
+      </motion.span>
+    </div>
+
+    <div className="flex flex-col gap-4">
+      {links.map((link, index) => (
+        <SidebarLink key={index} link={link} />
+      ))}
+    </div>
+  </SidebarBody>
+</Sidebar>
+
+      <main className="flex-1 overflow-y-auto p-6">{children}</main>
     </div>
   );
-};
-
-export default DashboardLayout;
-
+}
