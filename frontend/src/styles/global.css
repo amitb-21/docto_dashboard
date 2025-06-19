@@ -1,16 +1,16 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-lobster: "Lobster", cursive;
-  --font-pacifico: "Pacifico", cursive;
+  --font-base: 'Inter', sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-base);
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -18,16 +18,12 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-h1,
-.fancy-title {
-  font-family: var(--font-lobster), var(--font-geist-sans), cursive;
-  letter-spacing: 1px;
-  line-height: 1.1;
-}
 
+h1,
+.fancy-title,
 h2,
 .fancy-subtitle {
-  font-family: var(--font-pacifico), var(--font-geist-sans), cursive;
+  font-family: var(--font-base);
   letter-spacing: 0.5px;
   line-height: 1.2;
 }
