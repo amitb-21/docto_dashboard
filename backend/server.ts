@@ -1,13 +1,14 @@
-import express from "express";
-import userRoutes from "../backend/routes/auth";
-import doctorRoutes from "../backend/routes/doctor"
-import recordRoutes from "../backend/routes/record";
-const app = express();
+import mongoose from "mongoose";
 
-app.use(express.json());
-app.use("/api/user", userRoutes);
-app.use("/api/doctor",doctorRoutes);
-app.use("/api/records/",recordRoutes);
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+const connectDB = async (): Promise<void> => {
+  try {
+    const mongoURI = process.env.MONGO_URL || "mongodb://localhost:27017/yourdbname";
+    await mongoose.connect(mongoURI);
+    console.log("MongoDB connected successfully");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
+};
+
+export default connectDB;
