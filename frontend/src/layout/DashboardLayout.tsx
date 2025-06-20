@@ -9,6 +9,8 @@ import {
   SidebarLink,
 } from "@/components/Sidebar";
 
+import {TopBar} from "@/components/Navbar";
+
 import {
   IconLayoutDashboard,
   IconUser,

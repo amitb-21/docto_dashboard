@@ -3,8 +3,16 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
-  UserPlus, CalendarDays, Bell, FileText, HeartPulse, PlusCircle, Stethoscope, DollarSign, X, Check
+  UserPlus, FileText, Bell, X, Check
 } from 'lucide-react';
+import { usePatientContext } from "@/context/PatientContext";
+
+interface Patient {
+  id: number;
+  name: string;
+  age: string;
+  condition: string;
+}
 
 export default function DoctorDashboard() {
   const [date, setDate] = useState(new Date());
@@ -13,12 +21,17 @@ export default function DoctorDashboard() {
     { id: 2, name: "Jane Smith", time: "11:30 AM", reason: "Headache", completed: true },
     { id: 3, name: "Alice Johnson", time: "1:00 PM", reason: "Consultation", completed: false },
   ]);
+  const { addPatient } = usePatientContext();
 
   const [tasks, setTasks] = useState([
     { id: 1, text: "Review lab results", completed: false },
     { id: 2, text: "Approve pharmacy request", completed: false }
   ]);
+
   const [taskInput, setTaskInput] = useState("");
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ name: '', age: '', condition: '' });
 
   const toggleAppt = (id: number) => {
     setAppointments(prev => prev.map(a => a.id === id ? { ...a, completed: !a.completed } : a));
@@ -38,31 +51,41 @@ export default function DoctorDashboard() {
     setTasks(prev => prev.filter(t => t.id !== id));
   };
 
+  const handlePatientSubmit = () => {
+    const newPatient = {
+      id: Date.now(),
+      name: formData.name,
+      age: formData.age,
+      condition: formData.condition,
+    };
+    addPatient(newPatient); 
+    setFormData({ name: '', age: '', condition: '' });
+    setShowForm(false);
+  };
+
   return (
     <div className="min-h-screen bg-white px-6 py-6 text-gray-800 font-sans">
-      {/* Header & Stats Section with Calendar + Buttons */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Left Column: Welcome + Stats */}
         <div className="lg:col-span-2">
-          <div className="mb-4">
-            <h1 className="text-3xl font-semibold">Welcome back</h1>
-            <p className="text-gray-500 mt-1">Here’s what’s happening today</p>
-          </div>
+          <h1 className="text-3xl font-semibold mb-1">Welcome back</h1>
+          <p className="text-gray-500 mb-4">Here’s what’s happening today</p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {/* Stats */}
             <div className="bg-gray-100 p-4 rounded-xl text-center shadow-sm">
-              <p className="text-xs text-gray-500">Today's Patients</p>
+              <p className="text-xs text-gray-500"> Today's New Patients</p>
+              <p className="text-xl font-bold text-purple-600">{patients.length}</p>
+            </div>
+            <div className="bg-gray-100 p-4 rounded-xl text-center shadow-sm">
+              <p className="text-xs text-gray-500">Total Patients</p>
               <p className="text-xl font-bold text-blue-600">12</p>
             </div>
             <div className="bg-gray-100 p-4 rounded-xl text-center shadow-sm">
               <p className="text-xs text-gray-500">Completed Appointments</p>
               <p className="text-xl font-bold text-green-600">7</p>
             </div>
-            <div className="bg-gray-100 p-4 rounded-xl text-center shadow-sm">
-              <p className="text-xs text-gray-500">New Patients</p>
-              <p className="text-xl font-bold text-purple-600">3</p>
-            </div>
-            <div className="bg-gray-100 p-4 rounded-xl text-center shadow-sm">
+
+                        <div className="bg-gray-100 p-4 rounded-xl text-center shadow-sm">
               <p className="text-xs text-gray-500">Surgeries Scheduled</p>
               <p className="text-xl font-bold text-pink-600">2</p>
             </div>
@@ -74,11 +97,10 @@ export default function DoctorDashboard() {
               <p className="text-xs text-gray-500">Critical Cases</p>
               <p className="text-xl font-bold text-red-600">1</p>
             </div>
+
           </div>
         </div>
-        
 
-        {/* Right Column: Calendar + Buttons */}
         <div className="space-y-2">
           <div className="transform scale-90 origin-top-right">
             <Calendar
@@ -89,7 +111,10 @@ export default function DoctorDashboard() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+            >
               <UserPlus className="w-4 h-4" />
               New Patient
             </button>
@@ -101,6 +126,46 @@ export default function DoctorDashboard() {
           </div>
         </div>
       </div>
+
+      {showForm && (
+        <div className="bg-white p-4 border rounded-lg shadow-md mb-6">
+          <h3 className="text-lg font-medium mb-2">Add New Patient</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input
+              placeholder="Name"
+              className="p-2 border rounded"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+            <input
+              placeholder="Age"
+              className="p-2 border rounded"
+              value={formData.age}
+              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+            />
+            <input
+              placeholder="Condition"
+              className="p-2 border rounded"
+              value={formData.condition}
+              onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
+            />
+          </div>
+          <div className="flex gap-4 mt-4">
+            <button
+              onClick={handlePatientSubmit}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setShowForm(false)}
+              className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Appointments + Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
